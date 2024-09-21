@@ -20,14 +20,20 @@ function reset(){
 }
 setInterval(reset,1000);
 function response(room, msg, sender, isGroupChat, replier, imageDB, packageName) {
+  if(us.has(imageDB.getProfileBase64())){
+    let w=us.get(imageDB.getProfileBase64());
+    if(gmb.has(w)){
+      gmb.set(w,gmb.get(w)+1);
+    } else{
+      gmb.set(w,1);
+    }
+  }
   if(msg=="!안녕"){
     replier.reply("반가워요 "+sender+"님!");
-  }
-  if(msg=="!가입"){
+  } else if(msg=="!가입"){
     if(room!="gmb9817"){
       replier.reply("가입은 짐봇의 오픈채팅에서만 할 수 있습니다.\nhttps://open.kakao.com/o/sf0Ta3Ng");
-    }
-    else{
+    } else{
       let k=Math.random().toString(36).substr(2,11);
       while(user.has(k)){
         k=Math.random().toString(36).substr(2,11);
@@ -37,15 +43,30 @@ function response(room, msg, sender, isGroupChat, replier, imageDB, packageName)
       id.set(k,sender);
       replier.reply("가입 완료 되셨습니다 "+sender+"님!\n당신의 id는 "+k+" 입니다! 절대 남에게 공유하지 마시고 어딘가에 저장해두세요!\n!명령어 을 통해 명령어를 확인할수 있으세요~");
     }
-  }
-  if(msg=="!후원"){
+  } else if(msg=="!후원"){
     replier.reply("짐봇은 여러분의 후원으로 돌아갑니다!\n토스뱅크 1908-8466-3579\n100원의 기부도 소중하게 받아요~");
-  }
-  if(msg=="!명령어"){
+  } else if(msg=="!명령어"){
     replier.reply("아직 제작중입니다.");
-  }
-  if(msg=="!채팅랭킹"){
+  } else if(msg=="!채팅랭킹"){
     
+  } else if(msg=="!깃허브"){
+    replier.reply("짐봇은 모두를 위한 오픈소스 프로젝트입니다.\nhttps://github.com/gmb9817/gmbot\n코드를 복사해서 사용하실때는 출처를 명확히 해주세요!");
+  } else if(msg.startsWith("!새로고침")){
+    let q=msg.substr(6);
+    if(room=="gmb9817"){
+      if(user.has(q)){
+        let w=user.get(q);
+        us.delete(w);
+        us.set(imageDB.getProfileBase64(),q);
+        user.set(q,imageDB.getProfileBase64());
+        id.set(q,sender);
+        replier.reply("새로고침이 완료되었습니다!");
+      } else{
+        replier.reply("아직 가입을 안하신것 같습니다.\n!가입을 통해 가입해주세요.");
+      }
+    } else{
+      replier.reply("새로고침은 짐봇의 오픈채팅에서만 할 수 있습니다.\nhttps://open.kakao.com/o/sf0Ta3Ng");
+    }
   }
   function onCreate(savedInstanceState, activity) {
     var textView = new android.widget.TextView(activity);
