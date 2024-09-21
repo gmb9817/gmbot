@@ -31,9 +31,7 @@ function response(room, msg, sender, isGroupChat, replier, imageDB, packageName)
   if(msg=="!안녕"){
     replier.reply("반가워요 "+sender+"님!");
   } else if(msg=="!가입"){
-    if(room!="gmb9817"){
-      replier.reply("가입은 짐봇의 오픈채팅에서만 할 수 있습니다.\nhttps://open.kakao.com/o/sf0Ta3Ng");
-    } else{
+    if(canReply(room)){
       let k=Math.random().toString(36).substr(2,11);
       while(user.has(k)){
         k=Math.random().toString(36).substr(2,11);
@@ -41,7 +39,9 @@ function response(room, msg, sender, isGroupChat, replier, imageDB, packageName)
       user.set(k,imageDB.getProfileBase64());
       us.set(imageDB.getProfileBase64(),k);
       id.set(k,sender);
-      replier.reply("가입 완료 되셨습니다 "+sender+"님!\n당신의 id는 "+k+" 입니다! 절대 남에게 공유하지 마시고 어딘가에 저장해두세요!\n!명령어 을 통해 명령어를 확인할수 있으세요~");
+      replyRoom(room,"가입 완료 되셨습니다 "+sender+"님!\n당신의 id는 "+k+" 입니다! 절대 남에게 공유하지 마시고 어딘가에 저장해두세요!\n!명령어 을 통해 명령어를 확인할수 있으세요~");
+    } else{
+      replier.reply("당신의 갠으로 갈 수가 없습니다..");
     }
   } else if(msg=="!후원"){
     replier.reply("짐봇은 여러분의 후원으로 돌아갑니다!\n토스뱅크 1908-8466-3579\n100원의 기부도 소중하게 받아요~");
