@@ -12,6 +12,7 @@ let gmb=new Map; //채팅랭킹 전용 맵
 let user=new Map; //아이디,이미지
 let us=new Map; //이미지,아이디
 let id=new Map; //아이디, 닉네임
+let sign=new Map; //가입용 맵 이미지,bool
 function reset(){
   let ti=new Date(Date.now());
   if(ti.getSeconds()==0&&ti.getMinutes()==0&&ti.getHours()==0){
@@ -31,7 +32,10 @@ function response(room, msg, sender, isGroupChat, replier, imageDB, packageName)
   if(msg=="!안녕"){
     replier.reply("반가워요 "+sender+"님!");
   } else if(msg=="!가입"){
-    if(canReply(room)){
+    if(!sign.has(imageDB.getProfileBase64())){
+      sign.set(imageDB.getProfileBase64(),1);
+      replier.reply("!중요!\n외부로 유출되서는 안되는 id가 가입시 생성되니 안전한 곳(예:짐봇의 갠)에서 가입을 진행하세요!\n이미 안전한 곳이라면 !가입 을 다시 해주시기 바랍니다.");
+    } else{
       let k=Math.random().toString(36).substr(2,11);
       while(user.has(k)){
         k=Math.random().toString(36).substr(2,11);
@@ -39,11 +43,9 @@ function response(room, msg, sender, isGroupChat, replier, imageDB, packageName)
       user.set(k,imageDB.getProfileBase64());
       us.set(imageDB.getProfileBase64(),k);
       id.set(k,sender);
-      replyRoom(room,"가입 완료 되셨습니다 "+sender+"님!\n당신의 id는 "+k+" 입니다! 절대 남에게 공유하지 마시고 어딘가에 저장해두세요!\n!명령어 을 통해 명령어를 확인할수 있으세요~");
-    } else{
-      replier.reply("당신의 갠으로 갈 수가 없습니다..");
+      replier.reply(,"가입 완료 되셨습니다 "+sender+"님!\n당신의 id는 "+k+" 입니다! 절대 남에게 공유하지 마시고 어딘가에 저장해두세요!\n!명령어 을 통해 명령어를 확인할수 있으세요~");
     }
-  } else if(msg=="!후원"){
+    } else if(msg=="!후원"){
     replier.reply("짐봇은 여러분의 후원으로 돌아갑니다!\n토스뱅크 1908-8466-3579\n100원의 기부도 소중하게 받아요~");
   } else if(msg=="!명령어"){
     let com="!안녕 : 간단한 인사를 해줍니다.\n\
@@ -71,19 +73,15 @@ function response(room, msg, sender, isGroupChat, replier, imageDB, packageName)
     replier.reply("짐봇은 모두를 위한 오픈소스 프로젝트입니다.\nhttps://github.com/gmb9817/gmbot\n코드를 복사해서 사용하실때는 출처를 명확히 해주세요!");
   } else if(msg.startsWith("!새로고침")){
     let q=msg.substr(6);
-    if(room=="gmb9817"){
-      if(user.has(q)){
-        let w=user.get(q);
-        us.delete(w);
-        us.set(imageDB.getProfileBase64(),q);
-        user.set(q,imageDB.getProfileBase64());
-        id.set(q,sender);
-        replier.reply("새로고침이 완료되었습니다!");
-      } else{
-        replier.reply("아직 가입을 안하신것 같습니다.\n!가입을 통해 가입해주세요.");
-      }
+    if(user.has(q)){
+      let w=user.get(q);
+      us.delete(w);
+      us.set(imageDB.getProfileBase64(),q);
+      user.set(q,imageDB.getProfileBase64());
+      id.set(q,sender);
+      replier.reply("새로고침이 완료되었습니다!");
     } else{
-      replier.reply("새로고침은 짐봇의 오픈채팅에서만 할 수 있습니다.\nhttps://open.kakao.com/o/sf0Ta3Ng");
+      replier.reply("아직 가입을 안하신것 같습니다.\n!가입을 통해 가입해주세요.");
     }
   }
   function onCreate(savedInstanceState, activity) {
