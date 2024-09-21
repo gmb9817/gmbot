@@ -49,11 +49,12 @@ function response(room, msg, sender, isGroupChat, replier, imageDB, packageName)
     replier.reply("아직 제작중입니다.");
   } else if(msg=="!채팅랭킹"){
     let rank="!채팅랭킹!\n";
-    let ra=[...gmb];
+    let ra=Array.from(gmb);
     let cnt=1;
     ra.sort((a,b)=>b[1]-a[1]);
     for (a in ra){
       rank+=cnt+". "+id.get(a[0])+" : "+a[1]+"회\n";
+      cnt+=1;
     }
     replier.reply(rank);
   } else if(msg=="!깃허브"){
