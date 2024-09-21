@@ -52,10 +52,10 @@ function response(room, msg, sender, isGroupChat, replier, imageDB, packageName)
     let ra=Array.from(gmb);
     let cnt=1;
     ra.sort((a,b)=>b[1]-a[1]);
-    for (a in ra){
-      rank+=cnt+". "+id.get(a[0])+" : "+a[1]+"회\n";
+    ra.forEach((r)=>{
+      rank+=cnt+". "+id.get(r[0])+" : "+r[1]+"회\n";
       cnt+=1;
-    }
+    });
     replier.reply(rank);
   } else if(msg=="!깃허브"){
     replier.reply("짐봇은 모두를 위한 오픈소스 프로젝트입니다.\nhttps://github.com/gmb9817/gmbot\n코드를 복사해서 사용하실때는 출처를 명확히 해주세요!");
